@@ -4,12 +4,20 @@ permalink: /more.html
 ---
 <section >
 <div >
-    <blockquote>
-        <p><strong>OUISRC</strong> : Open-Unity-Innovate-Share-Respect-Collaboration.</p>
-    </blockquote><br>
-    <p>欢迎加入OUISRC社区 ：开放、联合、协作、尊重、创新！OUISRC有强大的社区基因与魅力，可持续的创新能力。</p><br>
-    <p>OUISRC的github社区Github: <a href="https://github.com/ouisrc" target="_blank">OUISRC</a></p><br>
-    <p>OUISRC的gitter社区: <a href="https://gitter.im/OUISRC-Community/OUISRC" target="_blank">OUISRC</a></p>  
+
+# 浏览源码
+
+<br>
+所有的Actix代码都是开源的，可以在我们的github组织中找到: [actixon github](https://github.com/actix)
+
+以下是最重要的项目以及与其github存储库和相关资源的链接:
+
+* [actix](https://github.com/actix/actix) ([issues](https://github.com/actix/actix/issues), [ci](https://travis-ci.org/actix/actix), [crate](https://crates.io/crates/actix), [api docs](https://docs.rs/actix))
+* [actix-web](https://github.com/actix/actix-web) ([issues](https://github.com/actix/actix-web/issues), [ci](https://travis-ci.org/actix/actix-web), [crate](https://crates.io/crates/actix-web), [api docs](https://docs.rs/actix-web))
+* [example code](https://github.com/actix/examples)
+* [this website](https://github.com/actix/actix-website)
+
+Actix在MIT和Apache 2下获得双重许可。[许可证文本](license/).
 
 
 </div>

@@ -62,15 +62,13 @@
   }
 
 /* ----------------------------------------section----------------------------------------*/
-  section, #index {
+  section {
     min-height: 100vh;
   }
   section main {
     margin-bottom: 2rem;
   }
   section.docs aside ul li a, section.blog aside ul li a {
-    display: inline-block;
-    margin-left: 0.8rem;
     text-decoration: none;
     transition: all 0.15s ease-in-out;
   }
@@ -105,7 +103,6 @@
     border: 1px solid #ccc;
     text-shadow: none;
   }
-
   code {
     padding: 2px 4px;
     font-size: 90%;
@@ -115,7 +112,6 @@
     color: var(--purple);
     text-shadow: none;
   }
-
   pre code {
     padding: 0;
     font-size: inherit;
@@ -147,16 +143,14 @@
       margin: 0 auto;
       padding: 11rem 2rem 8rem;
       text-align: center;
-      line-height: 2rem;
       background-color: var(--black);
   }
-  #index-top h1 {
-      font-size: 2rem;
-      color: var(--white);
+  #index-top img {
+      width: 33rem;
   }
   #index-top p {
-    font-size: 1.1rem;
-    margin: 2rem 0;
+    font-size: 1.5rem;
+    margin: 2.5rem 0;
     color: var(--grey);
   }
   #index-top button {
@@ -166,10 +160,7 @@
       background-color: var(--grey);
       border: none;
   }
-  #index #content {
-      padding: 2rem;
-      text-align: center;
-  }
+
 /* ----------------------------------------guides----------------------------------------*/
 /* ----------------------------------------projects----------------------------------------*/
 /* ----------------------------------------community----------------------------------------*/
@@ -298,32 +289,64 @@
     section {
       margin: 0 auto;
       padding-top: 5.5rem;
-      width: 75%;
+      width: 70%;
     }
     #index {
-      margin: 0 auto;
-      width: 75%;
+      width: 70%;
+      margin: 2rem auto;
+      display: flex;
+      flex-flow: row;
     }
+    #index #actix-features {
+        width: 40%;
+        margin-right: 1rem;
+    }
+    #index #actix-features li {
+        margin-bottom: 1.5rem;
+    }
+    #index #actix-features li h2 {
+      margin-bottom: 1rem;
+    }
+    #index #actix-code {
+        flex: 1;
+    }
+    #act-cn-tabs {
+      width: 70%;
+      margin: 0 auto 2rem;
+      border:#dfdedf solid 1px;
+    }
+    .act-menu li{
+      width: 25%;
+      display: inline-block;
+      text-align:center;
+      line-height:44px;
+      background-color: #faf2f2;
+      border:#afadaf solid 1px;
+    }
+    .act-menu li.off{
+      background:rgb(241, 243, 242);
+      color:#000000;
+      font-weight:bold;
+    } 
+    #act-cn-tabs #content {
+      padding: 1.5rem;
+    }
+    #act-cn-tabs #content p {
+      margin: 1rem 0;
+    }
+    
     section.docs .inner, section.blog .inner {
       display: flex;
+      flex-flow: row;
     }
     section.docs aside, section.blog aside {
-      flex: 0 1 30%;
+      flex: 1;
     }
     section.docs main, section.blog main {
-      flex: 0 1 100%;
+      width: 75%;
+      word-wrap: break-word;
     }
     #hr {
       display: none;
-    }
-    .columns {
-      display: flex;
-    }
-    .columns.three > article {
-      flex: 0 1 33%;
-      margin-right: 1.5%;
-    }
-    .columns.three > article:last-child {
-      margin-right: 0;
     }
   }
