@@ -7,24 +7,50 @@ permalink: /docs/basics/application.html
 
 actix-web提供了用Rust构建Web服务器和应用程序的各种基础类型。它提供了路由，中间件，请求的预处理，响应的后处理，websocket协议处理，multipart流，等等。
 
-所有actix web服务器都是围绕该App实例构建的。它用于为资源和中间件注册路由。它还存储同一应用程序中所有处理程序之间共享的应用程序状态
+<br>
+所有actix web服务器都是围绕该App实例构建的。它用于为资源和中间件注册路由。它还存储同一应用程序中所有处理程序之间共享的应用程序状态.
 
+<br>
 应用程序充当所有路由的命名空间，即特定应用程序的所有路由具有相同的url路径前缀。应用程序前缀总是包含一个前导的“/”斜杠。如果提供的前缀不包含前导斜杠，则会自动插入。前缀应该由路径值组成。
 
+<br>
 对于具有前缀的应用程序/app，与任何请求路径中有/app，/app/或/app/test匹配; 然而，路径/application不匹配。
 
-< include-example example="application" section="make_app" >
+```rust
+fn index(req: HttpRequest) -> impl Responder {
+    "Hello world!"
+}
+
+let app = App::new()
+    .prefix("/app")
+    .resource("/index.html", |r| r.method(Method::GET).f(index))
+    .finish()
+```
 
 在此示例中，将创建具有/app前缀和index.html资源的应用。该资源可通过/app/index.html路径获得。
 
->有关更多信息，请查看[URL Dispatch](../url-dispatch)部分。
+>有关更多信息，请查看[URL Dispatch](../advance/url-dispatch)部分。
 
+<br>
+但单服务器服务多个应用：
 
-一台服务器服务多个应用：
-
-< include-example example="application" section="run_server" >
+```rust
+let server = server::new(|| {
+    vec![
+        App::new()
+            .prefix("/app1")
+            .resource("/", |r| r.f(|r| HttpResponse::Ok())),
+        App::new()
+            .prefix("/app2")
+            .resource("/", |r| r.f(|r| HttpResponse::Ok())),
+        App::new().resource("/", |r| r.f(|r| HttpResponse::Ok())),
+    ]
+});
+```
 
 所有/app1请求路由到第一个应用程序，/app2到第二个，所有其他到第三个。 应用程序根据注册顺序进行匹配。如果具有更通用的前缀的应用程序在不通用的应用程序之前注册，它将有效地阻止较不通用的应用程序匹配。例如，如果App将前缀"/"注册为第一个应用程序，它将匹配所有传入的请求。
+
+<br>
 
 ## 状态
 
@@ -32,17 +58,45 @@ actix-web提供了用Rust构建Web服务器和应用程序的各种基础类型�
 
 我们来编写一个使用共享状态的简单应用程序。我们打算将请求计数存储在状态中：
 
-< include-example example="application" file="state.rs" section="setup" >
+```rust
+use actix_web::{http, App, HttpRequest};
+use std::cell::Cell;
+
+// This struct represents state
+struct AppState {
+    counter: Cell<usize>,
+}
+
+fn index(req: HttpRequest<AppState>) -> String {
+    let count = req.state().counter.get() + 1; // <- get count
+    req.state().counter.set(count); // <- store new count in state
+
+    format!("Request number: {}", count) // <- response with count
+}
+```
 
 应用程序需要通过初始化状态来初始化。
 
-< include-example example="application" file="state.rs" section="make_app" >
+```rust
+App::with_state(AppState { counter: Cell::new(0) })
+    .resource("/", |r| r.method(http::Method::GET).f(index))
+    .finish()
+```
 
 > **注意**：http服务器接受应用程序工厂而不是应用程序实例。Http服务器为每个线程构造一个应用程序实例，因此应用程序状态必须多次构建。如果你想在不同线程之间共享状态，应该使用共享对象，例如Arc。应用程序状态并不需要是Send和Sync，但应用程序的工厂必须是Send+ Sync。
 
 要启动以前的应用程序，请为其创建闭包：
 
-< include-example example="application" file="state.rs" section="start_app" >
+```rust
+server::new(|| {
+    App::with_state(AppState { counter: Cell::new(0) })
+        .resource("/", |r| r.method(http::Method::GET).f(index))
+}).bind("127.0.0.1:8080")
+    .unwrap()
+    .run()
+```
+
+<br>
 
 ## 结合不同状态的应用程序 
 
@@ -52,7 +106,30 @@ actix-web提供了用Rust构建Web服务器和应用程序的各种基础类型�
 
 使用[App::boxed](https://docs.rs/actix-web/*/actix_web/struct.App.html#method.boxed)方法可以轻松解决此限制，该方法可将App转换为boxed trait object。
 
-< include-example example="application" file="state.rs" section="combine" >
+
+```rust
+struct State1;
+struct State2;
+
+fn main() {
+    server::new(|| {
+        vec![
+            App::with_state(State1)
+                .prefix("/app1")
+                .resource("/", |r| r.f(|r| HttpResponse::Ok()))
+                .boxed(),
+            App::with_state(State2)
+                .prefix("/app2")
+                .resource("/", |r| r.f(|r| HttpResponse::Ok()))
+                .boxed(),
+                ]
+    }).bind("127.0.0.1:8080")
+        .unwrap()
+        .run()
+}
+```
+
+<br>
 
 ## 使用应用程序前缀来组合应用程序
 
@@ -61,9 +138,22 @@ actix-web提供了用Rust构建Web服务器和应用程序的各种基础类型�
 
 例如：
 
-< include-example example="url-dispatch" file="prefix.rs" section="prefix" >
+```rust
+fn show_users(req: HttpRequest) -> HttpResponse {
+    unimplemented!()
+}
+
+fn main() {
+    App::new()
+        .prefix("/users")
+        .resource("/show", |r| r.f(show_users))
+        .finish();
+}
+```
 
 在上面的示例中，`show_users`路由将具有/users/show的有效路由模式， 而不是/ show，因为应用程序的前缀参数将预先添加到该模式。只有当URL路径为/users/show，并且HttpRequest.url_for()路由名称show_users调用该函数时，路由才会匹配，它将生成具有相同路径的URL。
+
+<br>
 
 ## 应用程序谓词和虚拟主机
 
@@ -71,4 +161,20 @@ actix-web提供了用Rust构建Web服务器和应用程序的各种基础类型�
 
 任何这些谓词都可以用于App::filter()方法。提供的谓词之一是Host，它可以根据请求的主机信息用作应用程序的过滤器。
 
-< include-example example="application" file="vh.rs" section="vh" >
+```rust
+fn main() {
+    let server = server::new(|| {
+        vec![
+            App::new()
+                .filter(pred::Host("www.rust-lang.org"))
+                .resource("/", |r| r.f(|r| HttpResponse::Ok())),
+            App::new()
+                .filter(pred::Host("users.rust-lang.org"))
+                .resource("/", |r| r.f(|r| HttpResponse::Ok())),
+            App::new().resource("/", |r| r.f(|r| HttpResponse::Ok())),
+        ]
+    });
+
+    server.run();
+}
+```

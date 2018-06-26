@@ -15,7 +15,20 @@ for a server
 
 `HttpServer`是一位actix actor。它必须在正确配置的actix系统中初始化：
 
-< include-example example="server" section="main" >
+```rust
+use actix_web::{server::HttpServer, App, HttpResponse};
+
+fn main() {
+    let sys = actix::System::new("guide");
+
+    HttpServer::new(|| App::new().resource("/", |r| r.f(|_| HttpResponse::Ok())))
+        .bind("127.0.0.1:59080")
+        .unwrap()
+        .start();
+
+    let _ = sys.run();
+}
+```
 
 > 可以使用该run()方法在单独的线程中启动服务器。在这种情况下，服务器会产生一个新线程并在其中创建一个新的actix系统。要停止此服务器，请发送`StopServer`消息。
 
@@ -25,14 +38,47 @@ for a server
 - ResumeServer - 继续接受传入连接
 - StopServer - 停止传入连接处理，停止所有workers并退出
 
-< include-example example="server" file="signals.rs" section="signals" >
+```rust
+use actix_web::{server, App, HttpResponse};
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let sys = actix::System::new("http-server");
+        let addr = server::new(|| {
+            App::new()
+                .resource("/", |r| r.f(|_| HttpResponse::Ok()))
+        })
+            .bind("127.0.0.1:0").expect("Can not bind to 127.0.0.1:0")
+            .shutdown_timeout(60)    // <- Set shutdown timeout to 60 seconds
+            .start();
+        let _ = tx.send(addr);
+        let _ = sys.run();
+    });
+
+    let addr = rx.recv().unwrap();
+    let _ = addr.send(server::StopServer { graceful: true }).wait(); // <- Send `StopServer` message to server.
+}
+```
+
+<br>
 
 ## 多线程
 
 `HttpServer`自动启动一些http worker，默认情况下这个数量等于系统中逻辑CPU的数量。该数量可以用该[`HttpServer::workers()`](../../actix-web/actix_web/server/struct.HttpServer.html#method.workers)方法覆盖 。
 
 
-< include-example example="server" file="workers.rs" section="workers" >
+```rust
+use actix_web::{server::HttpServer, App, HttpResponse};
+
+fn main() {
+    HttpServer::new(|| App::new().resource("/", |r| r.f(|_| HttpResponse::Ok())))
+        .workers(4); // <- Start 4 workers
+}
+```
 
 服务器为每个创建的worker创建一个单独的应用实例。应用程序状态不在线程之间共享。分享状态，可以使用Arc。
 
@@ -44,12 +90,33 @@ for a server
 
 ```toml
 [dependencies]
-actix-web = { version = "< actix-version "actix-web" >", features = ["alpn"] }
+actix-web = { version = "0.6", features = ["alpn"] }
 ```
 
-< include-example example="server" file="ssl.rs" section="ssl" >
+```rust
+use actix_web::{server, App, HttpRequest, Responder};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
-》 **注意**：HTTP / 2.0协议需要[tls alpn](https://tools.ietf.org/html/rfc7301)。目前，只有openssl有alpn支持。完整示例，请查看[examples/tls](https://github.com/actix/examples/tree/master/tls).
+fn index(req: HttpRequest) -> impl Responder {
+    "Welcome!"
+}
+
+fn main() {
+    // load ssl keys
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+
+    server::new(|| App::new().resource("/index.html", |r| r.f(index)))
+        .bind_ssl("127.0.0.1:8080", builder)
+        .unwrap()
+        .run();
+}
+```
+
+> **注意**：HTTP / 2.0协议需要[tls alpn](https://tools.ietf.org/html/rfc7301)。目前，只有openssl有alpn支持。完整示例，请查看[examples/tls](https://github.com/actix/examples/tree/master/tls).
 
 要创建key.pem和cert.pem，请使用以下命令。**Fill in your own subject**
 
@@ -64,17 +131,32 @@ $ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem \
 $ openssl rsa -in key.pem -out nopass.pem
 ```
 
+<br>
+
 ## Keep-Alive
 
 Actix可以等待keep-alive的请求。
 
-》 *keep-alive*连接行为由服务器设置定义。
+> *keep-alive*连接行为由服务器设置定义。
 
 - `75`, `Some(75)`, `KeepAlive::Timeout(75)` - 75秒keep alive定时器。
 - `None` or `KeepAlive::Disabled` - 禁用 *keep alive*.
 - `KeepAlive::Tcp(75)` -  使用 `SO_KEEPALIVE` socket 选项.
 
-< include-example example="server" file="ka.rs" section="ka" >
+```rust
+use actix_web::{server, App, HttpResponse};
+
+fn main() {
+    server::new(|| App::new().resource("/", |r| r.f(|_| HttpResponse::Ok())))
+        .keep_alive(75); // <- Set keep-alive to 75 seconds
+
+    server::new(|| App::new().resource("/", |r| r.f(|_| HttpResponse::Ok())))
+        .keep_alive(server::KeepAlive::Tcp(75)); // <- Use `SO_KEEPALIVE` socket option.
+
+    server::new(|| App::new().resource("/", |r| r.f(|_| HttpResponse::Ok())))
+        .keep_alive(None); // <- Disable keep-alive
+}
+```
 
 如果选择第一个选项，则*keep alive*状态根据响应的*connection-type*计算。默认情况下`HttpResponse::connection_type`未定义。在这种情况下， *keep alive* 状态由请求的http版本定义。
 
@@ -82,7 +164,18 @@ Actix可以等待keep-alive的请求。
 
 *Connection type*可以用`HttpResponseBuilder::connection_type()`方法改变。
 
-< include-example example="server" file="ka_tp.rs" section="example" >
+```rust
+use actix_web::{http, HttpRequest, HttpResponse};
+
+fn index(req: HttpRequest) -> HttpResponse {
+    HttpResponse::Ok()
+        .connection_type(http::ConnectionType::Close) // <- Close connection
+        .force_close()                                // <- Alternative method
+        .finish()
+}
+```
+
+<br>
 
 ## 优雅的关机
 

@@ -5,7 +5,7 @@ permalink: /docs/intro/installation.html
 
 # 安装 Rust
 
-既然actix-web是一个Rust框架，你需要Rust来使用它。如果您还没有它，我们建议您使用rustup来管理您的Rust安装。该[官员Rust指南](https://doc.rust-lang.org/book/second-edition/ch01-01-installation.html) 有精彩的入门部分。
+既然actix-web是一个Rust框架，你需要Rust来使用它。如果您还没有它，我们建议您使用rustup来管理您的Rust安装。该[官方Rust指南](https://doc.rust-lang.org/book/second-edition/ch01-01-installation.html) 有精彩的入门部分。
 
 我们目前至少需要Rust 1.24，因此请确保您运行的rustup update 是最新且最好的Rust版本。特别是本指南将假定您实际运行Rust 1.26或更高版本。
 
@@ -18,7 +18,7 @@ Release版本：
 
 ```ini
 [dependencies]
-actix-web = "< actix-version "actix-web" >"
+actix-web = "0.6"
 ```
 
 Development 版本：

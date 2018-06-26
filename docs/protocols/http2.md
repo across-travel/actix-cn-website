@@ -16,7 +16,7 @@ permalink: /docs/protocols/http2.html
 
 ```toml
 [dependencies]
-actix-web = { version = "< actix-version "actix-web" >", features = ["alpn"] }
+actix-web = { version = "0.6", features = ["alpn"] }
 openssl = { version = "0.10", features = ["v110"] }
 ```
 
