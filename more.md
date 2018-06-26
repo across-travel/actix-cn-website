@@ -17,6 +17,7 @@ permalink: /more.html
 * [example code](https://github.com/actix/examples)
 * [this website](https://github.com/actix-cn/actix-cn-website)
 
+<br>
 Actix在MIT和Apache 2下获得双重许可。
 
 
