@@ -1,6 +1,6 @@
 title:   文档:主题:数据库
 layout: docs.liquid
-permalink: /docs/them/databases.html
+permalink: /docs/theme/databases.html
 ---
 
 # Diesel

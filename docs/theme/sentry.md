@@ -1,6 +1,6 @@
 title:   文档:主题:Sentry
 layout: docs.liquid
-permalink: /docs/them/sentry.html
+permalink: /docs/theme/sentry.html
 ---
 
 # Sentry崩溃报告

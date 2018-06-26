@@ -1,6 +1,6 @@
 title:   文档:主题:自动重加载
 layout: docs.liquid
-permalink: /docs/them/autoreload.html
+permalink: /docs/theme/autoreload.html
 ---
 
 # 自动重新加载开发服务器

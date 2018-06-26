@@ -1,4 +1,4 @@
-title:   文档:高级:错愕处理
+title:   文档:高级:错误处理
 layout: docs.liquid
 permalink: /docs/advance/errors.html
 ---

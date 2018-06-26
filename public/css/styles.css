@@ -102,22 +102,25 @@
     margin: 0 0 10px;
     font-size: 13px;
     line-height: 1.42857143;
-    color: var(--purple);
+    color: var(--dark-grey);
     word-break: break-all;
     word-wrap: break-word;
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     text-shadow: none;
+    overflow-x: auto;
   }
+  
   code {
     padding: 2px 4px;
     font-size: 90%;
     background-color: #f5f5f5;
     border-radius: 4px;
     border: 1px solid #ccc;
-    color: var(--purple);
+    color: var(--dark-grey);
     text-shadow: none;
   }
+  
   pre code {
     padding: 0;
     font-size: inherit;
@@ -133,6 +136,7 @@
     text-align: center;
     justify-content: center;
     border-top: 2px solid var(--purple);
+    bottom: 0;
   }
   footer a { 
     color: var(--purple); 
@@ -159,11 +163,10 @@
     color: var(--grey);
   }
   #index-top button {
-      margin-right: 18px;
-      font-size: 18px;
-      padding: 8px 22px;
-      background-color: var(--grey);
-      border: none;
+    font-weight: bold;
+      padding: 0.6rem 1.5rem;
+      background-color: #af9caf;
+      border:#afadaf solid 1px;
   }
   .act-menu li{
     text-align:center;
