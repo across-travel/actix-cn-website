@@ -3,9 +3,6 @@ layout: docs.liquid
 permalink: /docs/index.html
 ---
 
-### Documentation
+Actix是您用Rust开发Web服务的大门，本文档将引导您。
 
-Welcome to the Actix docs! 
-
-If you feel like contributing further, you can fork that repo,
-branch from `source`, and submit a pull request.
+本文档目前主要介绍actix-web构建在[actix](https://docs.rs/actix)的actor框架和 [Tokio](https://tokio.rs/)异步IO系统之上的高级Web框架。这是从API稳定的角度出发。

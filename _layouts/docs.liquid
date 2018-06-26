@@ -11,22 +11,57 @@
       <section class="blog">
         <div class="inner">
           <aside>
-            <p>Basics</p>
-            <ul>
-              <li><a {%if page.permalink == "Basics-example"%}class="active"{%endif%} href="/docs/Basics/Basics-example.html">Basics Example</a></li>
-            </ul>
-            <p>Reference</p>
-            <ul>
-              <li><a {%if page.permalink == "Reference-example"%}class="active"{%endif%} href="/docs/Reference/Reference-example.html">Reference Example</a></li>
-            </ul>
-            <p>Advance</p>
-            <ul>
-              <li><a {%if page.permalink == "Advance-example"%}class="active"{%endif%} href="/docs/Advance/Advance-example.html">Advance Example</a></li>
-            </ul>
-            <p>API</p>
-            <ul>
-              <li><a {%if page.permalink == "API-example"%}class="active"{%endif%} href="/docs/API/API-example.html">API Example</a></li>
-            </ul>
+            <details>
+              <summary>介绍</summary>
+                <ul>
+                  <li><a {%if page.permalink == "intro"%}class="active"{%endif%} href="/docs/intro/whatis.html">何为Actix</a></li>
+                  <li><a {%if page.permalink == "intro"%}class="active"{%endif%} href="/docs/intro/installation.html">安装</a></li>
+                </ul>
+            </details>
+            <details>
+              <summary>基本</summary>
+              <ul>
+                <li><a {%if page.permalink == "basics"%}class="active"{%endif%} href="/docs/basics/application.html">应用</a></li>
+                <li><a {%if page.permalink == "basics"%}class="active"{%endif%} href="/docs/basics/extractors.html">Extractors</a></li>
+                <li><a {%if page.permalink == "basics"%}class="active"{%endif%} href="/docs/basics/getting-started.html">开始</a></li>
+                <li><a {%if page.permalink == "basics"%}class="active"{%endif%} href="/docs/basics/handlers.html">Handlers</a></li>
+                <li><a {%if page.permalink == "basics"%}class="active"{%endif%} href="/docs/basics/server.html">服务器</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>高级</summary>
+              <ul>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/errors.html">错愕处理</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/middleware.html">中间件</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/request.html">请求</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/response、.html">响应</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/static-files.html">静态文件</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/testing.html">测试</a></li>
+                <li><a {%if page.permalink == "advance"%}class="active"{%endif%} href="/docs/advance/url-dispatch.html">路由分发</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>协议</summary>
+              <ul>
+                <li><a {%if page.permalink == "protocols"%}class="active"{%endif%} href="/docs/protocols/http2.html">HTTP2</a></li>
+                <li><a {%if page.permalink == "protocols"%}class="active"{%endif%} href="/docs/protocols/websocket.html">Websocket</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>主题</summary>
+              <ul>
+                <li><a {%if page.permalink == "theme"%}class="active"{%endif%} href="/docs/theme/autoreload.html">自动重加载</a></li>
+                <li><a {%if page.permalink == "theme"%}class="active"{%endif%} href="/docs/theme/databases.html">数据库</a></li>
+                <li><a {%if page.permalink == "theme"%}class="active"{%endif%} href="/docs/theme/sentry.html">Sentry</a></li>
+              </ul>
+            </details>
+            <details>
+              <summary>API文档</summary>
+              <ul>
+                <li><a  href="https://docs.rs/actix" target="view_window">Actix</a></li>
+                <li><a  href="https://docs.rs/actix-web" target="view_window">Actix-web</a></li>
+              </ul>
+            </details>
           </aside>
           <hr id="hr">
           <main>

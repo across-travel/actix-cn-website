@@ -3,9 +3,6 @@ layout: blog.liquid
 permalink: /blog/index.html
 ---
 
-### Blog
+欢迎来到Actix 博客.
 
-Welcome to the Actix Blog! 
-
-If you feel like contributing further or write blogs, you can fork that repo,
-branch from `source`, and submit a pull request.
+欢迎开始快乐的Actix之旅， 你可以从左侧的时间点选择开始。
