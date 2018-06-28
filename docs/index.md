@@ -1,4 +1,4 @@
-title:  Docs
+title:  文档
 layout: docs.liquid
 permalink: /docs/index.html
 ---
